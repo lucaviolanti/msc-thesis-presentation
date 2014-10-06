@@ -91,22 +91,44 @@
 
 \begin{frame}
 	\frametitle{Knowledge Base}
+	\begin{columns}[T]
+	\begin{column}{5cm}
 	\begin{block}{Intensional part: Terminological Box (\textbf{TBox})}
-	E.g.:
+	\begin{itemize}
+	\item definition of concepts
+	\item definition of roles
+	\item inclusions between concepts
+	\end{itemize}
+	\end{block}
+	
+	\begin{example}
 		\begin{itemize}
 		\item $Penguin \sqsubseteq Bird$\\
 		\item $Bird \sqsubseteq Animal$\\
 		\item $Cat \sqsubseteq Animal$\\[0.4cm]
 		\end{itemize}
-	\end{block}		
-	\begin{block}{Extensional part: Assertional Box (\textbf{ABox})}
-	E.g.:
+	\end{example}
+	\end{column}
+	
+	\begin{column}{5cm}
+	\begin{block}{Extensional part:\\Assertional Box (\textbf{ABox})}
+	\begin{itemize}
+		\item instances of concepts
+		\item instances of roles
+		\end{itemize}
+	\end{block}
+	
+	\vspace{1.1cm}
+	
+	\begin{example}
 		\begin{itemize}
 		\item $Bird(tweety)$\\
 		\item $Cat(sylvester)$
 		\item $Hates(sylvester, tweety)$
 		\end{itemize}
-	\end{block}
+	\end{example}
+	\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -120,16 +142,33 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Inference: query entailment}
+	\frametitle{Inference}
+	\begin{block}{Model satisfying a KB}
+	A model $\mathcal{M} = \langle \Delta, \mathcal{I} \rangle$ satisfies a KB if it satisfies both its TBox and its ABox, where
+	\begin{itemize}
+		\item $\mathcal{M}$ satisfies the TBox if for each inclusion $C \sqsubseteq D$ in the TBox, it holds $C^\mathcal{I} \subseteq D^\mathcal{I}$
+		
+		\item $\mathcal{M}$ satisfies the ABox if
+		\begin{itemize} 
+			\item for each $C(a)$ in the ABox, $a^\mathcal{I} \in C^\mathcal{I}$
+			\item for each $aRb$ in the ABox, $(a^\mathcal{I}, b^\mathcal{I}) \in R^\mathcal{I}$
+		\end{itemize}
+	\end{itemize}
+	\end{block}
+\end{frame}
+\begin{frame}
+	\frametitle{Inference}	
 	\begin{block}{Query entailment}
-	A formula $F$ entails from a $KB$ if every model of such KB is also a model of $F$. We write $KB \models F$.
+	A query $F$ is entailed by a $KB$ if it holds in every model of such KB. We write $KB \models F$.
 	\end{block}
 	
-	E.g., from the previous example:
+	\begin{example}
+	Following the previous example:
 	\begin{itemize}
 		\item $KB \models Penguin \sqsubseteq Animal$
 		\item $KB \not\models Penguin(sylvester)$
 	\end{itemize}
+	\end{example}
 \end{frame}
 
 \begin{frame}
@@ -138,6 +177,18 @@
 	\begin{itemize}
 	\item \textbf{typical} properties
 	\item \textbf{defeasible inheritance}
+	
+	\begin{example}
+	If we added to the previous KB
+	\begin{itemize}
+		\item ...
+		\item $Penguin \sqsubseteq Bird$
+		\item \alert{$Bird \sqsubseteq FlyingAnimal$}
+		\item \alert{$Penguin \sqsubseteq \neg FlyingAnimal$}
+	\end{itemize}
+	such a KB is consistent only if there are no penguins!
+	\end{example}
+	
 %	\item per gestire l'ereditarietà defeasible richiedono meccanismi di ragionamento non--monotoni
 %	
 %	Es: - vari esempi (default, circumscription, ...)
@@ -151,14 +202,15 @@
 	A typicality operator is added (\tip) to the existing DL.\\
 	Therefore we can model concepts as:
 	\begin{itemize}
-	\item $\tip(C)$, i.e. the \textbf{typical instances} of concept C\\
+	\item $\tip(C)$, i.e. the \textbf{typical instances} of concept $C$\\
 	\end{itemize}
 	\end{block}
 	
-	E.g.:
+	\begin{example}
 	\begin{itemize}
 	\item $\tip(Bird) \sqsubseteq FlyingAnimal$
 	\end{itemize}
+	\end{example}
 \end{frame}
 
 \begin{frame}
@@ -168,9 +220,7 @@
 	Given an alphabet of concept names $\mathcal{C}$, role names $\mathcal{R}$, and individual constants $\mathcal{O}$, we can define the language $\mathcal{L}$ of $\alct$:
 	
 	\normalsize
-	\begin{block}{Constants}
-	any $a \in \mathcal{O}$ is a constant of $\mathcal{L}$.
-	\end{block}
+
 	\begin{block}{Concepts}
 	if $C, D \in \mathcal{L}$ and $R \in \mathcal{R}$, then
 	\begin{multicols}{2}
@@ -183,12 +233,61 @@
 		\item $\neg C$
 		\item $\forall R.C$
 		\item $\exists R.C$
-		\item \alert{$\tip(C)$}
 		\end{itemize}
 	\end{multicols}
-	are concepts of $\mathcal{L}$.
+	are concepts of $\mathcal{L}$
+	\end{block}
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{$\alct$: syntax}
+	\begin{block}{Extended concepts}
+	if $C$ is a concept, then
+	\begin{multicols}{2}
+		\begin{itemize}
+		\item $C$
+		\item \alert{$\tip(C)$}		
+		\item all the boolean combinations of extended concepts
+		\end{itemize}
+	\end{multicols}
+	are exended concepts of $\mathcal{L}$
 	\end{block}
 \end{frame}
+
+\begin{frame}
+	\frametitle{$\alct$: Knowledge Base}
+	A Knowledge Base is a pair (TBox, ABox)
+	\begin{columns}[T]
+	\begin{column}{5cm}
+	\begin{block}{\textbf{TBox}}
+	\begin{itemize}
+		\item $C \sqsubseteq D$
+	\end{itemize}
+	\end{block}
+	\end{column}
+	
+	\begin{column}{5cm}
+	\begin{block}{\textbf{ABox}}
+	\begin{itemize}
+		\item $C(a)$
+		\item $aRb$	
+		\end{itemize}
+	\end{block}
+	\end{column}	
+	\end{columns}
+	\vspace{0.3cm}		
+	where $R \in \mathcal{R}$, $a, b \in \mathcal{O}$, $C$ is an extended concept and $D$ is a concept not mentioning $\tip$
+	
+	\begin{example}
+	
+		\begin{itemize}
+		\item $\tip(Penguin) \sqsubseteq \neg FlyingAnimal$
+		\end{itemize}
+		
+	\end{example}
+\end{frame}
+
 
 \begin{frame}
 	\frametitle{$\alct$: semantics}
@@ -200,7 +299,6 @@
 	\footnotesize
 	For all $S\subseteq \Delta$, for all $x \in S$, either $x \in Min_<(S)$ or $\exists y \in  Min_<(S)$ such that $y < x$.
 	\normalsize
-	%%FIXME: qui ci vorrebbe il discorso sulla smoothness condition	
 	\item $\mathcal{I}$, an interpretation function which assigns:
 		\begin{itemize}
 		\item to each concept $C \in \mathcal{C}$, a set $C^{\mathcal{I}} \subseteq \Delta^{\mathcal{I}}$\\
@@ -211,6 +309,24 @@
 		\end{itemize}
 	\end{itemize}
 	\end{block}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Example: $\alct$}
+	\begin{figure}[h]
+	\centering
+	\includegraphics[scale=.30]{img/diagram1_9.png}
+	\end{figure}
+
+	\begin{itemize}
+	\item the individuals which are $\tip(C)$ are highlighted
+	\item $x$ is preferred to $y$, but it is not a $\tip(C)$ since it is not in $C^{\mathcal{I}}$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Example: $\alct$}
+	--- QUI METTERE ESEMPIO CON STUDENTI ---
 \end{frame}
 
 \begin{frame}
@@ -228,18 +344,7 @@
 \end{frame}
 
 
-\begin{frame}
-	\frametitle{Example: $\alct$}
-	\begin{figure}[h]
-	\centering
-	\includegraphics[scale=.30]{img/diagram1_9.png}
-	\end{figure}
 
-	\begin{itemize}
-	\item the individuals which are $\tip(C)$ are highlighted
-	\item $x$ is preferred to $y$, but it is not a $\tip(C)$ since it is not in $C^{\mathcal{I}}$
-	\end{itemize}
-\end{frame}
 
 \begin{frame}
 	\frametitle{Limit of $\alct$}
@@ -302,27 +407,29 @@
 \begin{frame}
 	\frametitle{Solution: $\alctmin$}
 		The non--monotonic behaviour is obtained by restricting the attention to the \textbf{minimal} $\alct$ models
-	\begin{block}{Non--monotonic semantics: Preference among models}
-	Let us consider a finite set $\LT$ of concepts occurring in the KB.\\[0.2cm]
-	A model $\mathcal{M}_1$ is preferred to $\mathcal{M}_2$ w.r.t. $\LT$ $(\mathcal{M}_1 <_\LT \mathcal{M}_2)$ if
+	\begin{block}{Non--monotonic semantics: preference among models}
+	
+	A model $\mathcal{M}_1$ is preferred to $\mathcal{M}_2$ $(\mathcal{M}_1 < \mathcal{M}_2)$ if
 		\begin{itemize}
 		\item $\Delta_1 = \Delta_2$	
 		\item for all $a$ in the ABox, $a^{\mathcal{I}_1} = a^{\mathcal{I}_2}$
-		\item the set of $(x, \neg\Box\neg C)$ holding in $\mathcal{M}_1$ $\subset$ the set of $(x, \neg\Box\neg C)$ holding in $\mathcal{M}_2$ for $C \in \LT$
+		\item the set of $(x, \neg\Box\neg C)$ holding in $\mathcal{M}_1$ $\subset$ the set of $(x, \neg\Box\neg C)$ holding in $\mathcal{M}_2$
 		\end{itemize}
 	\end{block}
+	
+	Intuitively, this means we prefer models involving more ``normal'' individuals (less atypical individuals)
 \end{frame}
 
 \begin{frame}
 	\frametitle{Solution: $\alctmin$}
 	\begin{block}{Minimal entailment}
-	A model $\mathcal{M}$ is \textbf{minimal} for a KB w.r.t. $\LT$ if
+	A model $\mathcal{M}$ is \textbf{minimal} for a KB if
 		\begin{itemize}
 		\item $\mathcal{M}$ is a model of the KB
-		\item there is no other model $\mathcal{N}$ of the KB s.t. $N <_\LT M$\\[0.5cm]
+		\item there is no other model $\mathcal{N}$ of the KB s.t. $N < M$\\[0.5cm]
 		\end{itemize}
-		$F$ is \textbf{minimally entailed} from a KB w.r.t. $\LT$ \alert{$(KB \models_{min} F)$}\\[0.1cm]
-		if $F$ holds in all the models of the KB which are minimal w.r.t. $\LT$
+		$F$ is \textbf{minimally entailed} from a KB \alert{$(KB \models_{min} F)$}\\[0.1cm]
+		if $F$ holds in all the models of the KB which are minimal
 	\end{block}
 \end{frame}
 
@@ -354,10 +461,10 @@
 \begin{frame}
 	\frametitle{First phase: $\primo$}
 	\begin{block}{$\primo$}
-	Verifies whether $KB \cup \{\neg F\}$ is satisfiable in an $\alct$ model by generating \textbf{candidate models} $\mathcal{M}_i$
+	Verifies whether $KB \cup \{\neg F\}$ is satisfiable in an $\alct$ model by generating \textbf{branches}, which represent \textbf{candidate models}
 	\begin{itemize}
-	\item the ones in which $F$ holds cannot be counterexamples, thus they are discarded
-	\item a model $\mathcal{M}_i$ of $KB \cup \{\neg F\}$ in which $F$ does not hold, instead, \textbf{could be a counterexample}
+	\item if there is a contradiction, the branch is \emph{closed}
+	\item if we have a model $\mathcal{M}_i$ of the KB in which $F$ does not hold, its branch $B_i$ is \emph{open}: $\mathcal{M}_i$ \textbf{could be a counterexample}
 	\end{itemize}
 	\end{block}
 \end{frame}
@@ -365,15 +472,14 @@
 \begin{frame}
 	\frametitle{Second phase: $\secondo$}
 	\begin{block}{$\secondo$}
-	For each candidate model $\mathcal{M}_i$, tries to build a model of the $KB$, $\mathcal{M}_j^{KB}$, which is preferred to $\mathcal{M}_i$
+	If a branch $B_i$ is still \emph{open} after the first phase, $\secondo$ tries to build a model of the $KB$, $\mathcal{M}_j^{KB}$, which is preferred to $\mathcal{M}_i$
 	\begin{itemize} 
-	\item if every attempt of $\secondo$ fails on a candidate $\mathcal{M}_i$, $\mathcal{M}_i$ is the minimal model (i.e. the counterexample): $KB \not\models_{min} F$
-	\item in case even a single $\mathcal{M}_j^{KB}$ is preferred to an $\mathcal{M}_i$, $\mathcal{M}_i$ is not the counterexample (but there could be another $\mathcal{M}_k$!)
-	\item if every $\mathcal{M}_i$ has at least one corresponding $\mathcal{M}_j^{KB}$ so that $\mathcal{M}_j^{KB} <_\LT \mathcal{M}_i$, $KB \cup \neg F$ has no models, and $KB \models_{min} F$\\
+	\item if $\secondo$ fails, then $\mathcal{M}_i$ \textbf{is} the minimal model (i.e. the counterexample): \alert{we can conclude that $KB \not\models_{min} F$}
+	\item in case even a single $\mathcal{M}_j^{KB}$ is preferred to an $\mathcal{M}_i$, $\mathcal{M}_i$ is not the counterexample
 	\end{itemize}
+	If every $\mathcal{M}_i$ has at least one corresponding $\mathcal{M}_j^{KB}$ preferred to it, $KB \cup \neg F$ has no models, and \alert{we can conclude that $KB \models_{min} F$}
 	\end{block}
 \end{frame}
-
 
 \begin{frame}
 	\frametitle{First implementation of $\nuovoc$: \emph{PreDeLo}}
@@ -384,7 +490,6 @@
 \includegraphics[scale=.30]{img/predelo.png}
 \end{figure}
 \end{frame}
-
 
 \begin{frame}
 \frametitle{Example: \emph{PreDeLo}}
@@ -454,8 +559,29 @@ We developed a \textbf{new theorem prover}, called \emph{DysToPic}, distributing
 \end{frame}
 
 \begin{frame}
+	\frametitle{Technologies: Jasper}
+	
+	Jasper is a bi-directional interface between Java and a SICStus~Prolog engine
+	\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.66]{img/jasper.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Technologies: Java RMI}
+	
+	The Java Remote Method Invocation (Java RMI) is a Java API which allows the methods of remote  objects to be invoked from other Java virtual machines
+	\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.66]{img/rmi.png}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}
 \begin{example}
-\frametitle{Implementation}
+\frametitle{Example: $DysToPic$}
 	
 	\begin{tikzpicture}
 	\begin{ganttchart}[
@@ -496,7 +622,7 @@ We developed a \textbf{new theorem prover}, called \emph{DysToPic}, distributing
 \end{frame}
 
 \begin{frame}
-\frametitle{Implementation}
+\frametitle{Example: $DysToPic$}
 
 \begin{example}
 	
